@@ -1,25 +1,30 @@
-const http = require('http');
+const http = require('http')
+const fs = require('fs').promises
 
-console.log(http);
+const routerGET = {
+  '/': async (req, res) => {
+    const data = await fs.readFile('./views/index.html', 'utf8')
+    res.end(data)
+  },
+  '/contacts.html': async (req, res) => {
+    const data = await fs.readFile('./views/contacts.html', 'utf8')
+    res.end(data)
+  },
+  '/about.html': async (req, res) => {
+    const data = await fs.readFile('./views/about.html', 'utf8')
+    res.end(data)
+  }
+}
 
-/*
-How does require work?
-1) Resolving - поск файла
-2) Loading - загрузка файла
-3) Wrapping - добавление обетрки для модуля
-4) Evaluation - выполнение кода
-5) Caching - кеширование выполненного кода
-*/
+const requestListener = async (req, res) => {
+  if (routerGET[req.url]) {
+    return routerGET[req.url](req, res)
+  }
 
-/*
- Require file search stages
-1) Common modules
-2) File
-  2.1) *.js
-  2.2) *.json
-3) Directory
-  3.1) package.json -> main
-  3.2) index.js | index.json
-4) node_modules
-5) throw new Error()
-*/
+  const data = await fs.readFile('./views/404.html', 'utf8')
+  res.end(data)
+}
+
+const server = http.createServer(requestListener)
+
+server.listen(3000)
