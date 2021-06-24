@@ -1,5 +1,11 @@
 const express = require('express');
-const { createUser, getUsers } = require('./controllers/user.controller');
+const {
+  createUser,
+  getUsers,
+  getUser,
+  updateUser,
+  deleteUser,
+} = require('./controllers/user.controller');
 const app = express();
 const jsonParser = express.json();
 
@@ -10,6 +16,12 @@ app.get('/', (req, res, next) => {
 });
 
 app.post('/users', jsonParser, createUser);
+
+app.get('/users/:id', getUser);
+
+app.put('/users/:id', jsonParser, updateUser);
+
+app.delete('/users/:id', deleteUser);
 
 app.get('/users', getUsers);
 
